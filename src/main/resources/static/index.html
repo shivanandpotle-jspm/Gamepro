@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Flip – Master | Brain Training Card Game</title>
+    
+    <!-- Google Fonts: Outfit & Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for Statistics Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Master Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container"></div>
+
+    <!-- App Container -->
+    <div id="app">
+
+        <!-- Top Navigation Header -->
+        <header class="app-header">
+            <a href="#" class="brand" id="nav-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div>
+                    <h1 class="brand-title">Memory Flip</h1>
+                </div>
+            </a>
+
+            <div class="header-actions">
+                <!-- Player Name Chip -->
+                <div class="player-chip" id="header-player-chip" title="Click to change your player name">
+                    <div class="player-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <span id="header-player-name">Player</span>
+                    <i class="fas fa-pen" style="font-size: 11px; opacity: 0.6;"></i>
+                </div>
+
+                <!-- Sound FX Toggle -->
+                <button class="btn-icon" id="btn-sound-toggle" title="Toggle Sound">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 1: HOME / LANDING SCREEN                                    -->
+        <!-- ================================================================== -->
+        <main id="screen-home" class="screen active">
+            <section class="home-hero">
+                <div class="home-logo-wrap">
+                    <div class="home-logo-cards">
+                        <div class="floating-card"><i class="fas fa-brain" style="color:var(--accent-purple)"></i></div>
+                        <div class="floating-card"><i class="fas fa-bolt" style="color:var(--accent-orange)"></i></div>
+                        <div class="floating-card"><i class="fas fa-trophy" style="color:var(--accent-gold)"></i></div>
+                    </div>
+                </div>
+
+                <h1 class="home-title">MEMORY FLIP – MASTER</h1>
+                <p class="home-tagline">Train Your Brain. Challenge Your Memory. Become a Master.</p>
+
+                <div class="home-cta">
+                    <button class="btn btn-primary btn-lg" id="btn-home-play">
+                        <i class="fas fa-play"></i> Play Now
+                    </button>
+                    <button class="btn btn-secondary btn-lg" id="btn-home-leaderboard">
+                        <i class="fas fa-trophy"></i> Leaderboard
+                    </button>
+                </div>
+            </section>
+
+            <!-- Quick Stats Section -->
+            <section class="quick-stats-bar">
+                <div class="stat-box">
+                    <div class="stat-icon orange"><i class="fas fa-gamepad"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Games Played</span>
+                        <span class="stat-value" id="quick-played">0</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon purple"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Games Won</span>
+                        <span class="stat-value" id="quick-won">0</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon gold"><i class="fas fa-star"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Best Score</span>
+                        <span class="stat-value" id="quick-high-score">0</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon cyan"><i class="fas fa-stopwatch"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Best Time</span>
+                        <span class="stat-value" id="quick-best-time">--:--</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Menu Navigation Cards -->
+            <section class="home-menu-grid">
+                <div class="menu-card" id="card-nav-difficulty">
+                    <div class="menu-card-icon" style="color:var(--accent-orange)"><i class="fas fa-sliders-h"></i></div>
+                    <h3 class="menu-card-title">Choose Difficulty</h3>
+                    <p class="menu-card-desc">Play Easy, Medium, Hard, or Expert with tailored card grid sizes.</p>
+                </div>
+
+                <div class="menu-card" id="btn-home-stats">
+                    <div class="menu-card-icon" style="color:var(--accent-purple)"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="menu-card-title">Statistics</h3>
+                    <p class="menu-card-desc">Review your win rate, moves, time metrics, and performance charts.</p>
+                </div>
+
+                <div class="menu-card" id="btn-home-howto">
+                    <div class="menu-card-icon" style="color:var(--accent-cyan)"><i class="fas fa-graduation-cap"></i></div>
+                    <h3 class="menu-card-title">How to Play</h3>
+                    <p class="menu-card-desc">Understand scoring multipliers, power-ups, hints, and strategies.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 2: DIFFICULTY SELECTION                                     -->
+        <!-- ================================================================== -->
+        <main id="screen-difficulty" class="screen">
+            <div class="section-header">
+                <h2 class="section-title">Select Challenge Mode</h2>
+                <p class="section-subtitle">Pick a difficulty level or embark on the 20+ level journey</p>
+            </div>
+
+            <!-- Mode Selector Tabs -->
+            <div class="mode-tabs">
+                <button class="mode-tab active" id="tab-classic">Classic Difficulty</button>
+                <button class="mode-tab" id="tab-progressive">Progressive Journey (20+ Levels)</button>
+            </div>
+
+            <!-- Classic 4-Tier Difficulty Grid -->
+            <div id="difficulty-classic-section" class="difficulty-cards-grid">
+                <!-- Easy -->
+                <div class="diff-card easy" data-diff="EASY">
+                    <span class="diff-badge">Beginner</span>
+                    <div class="diff-icon" style="color:var(--accent-green)"><i class="fas fa-seedling"></i></div>
+                    <h3 class="diff-name">Easy</h3>
+                    <p class="diff-grid-spec">4 × 3 Grid • 6 Pairs</p>
+                    <div class="diff-meta-list">
+                        <div class="diff-meta-item"><span>Target Time:</span><span class="diff-meta-val">45s</span></div>
+                        <div class="diff-meta-item"><span>Multiplier:</span><span class="diff-meta-val">1.0x</span></div>
+                    </div>
+                </div>
+
+                <!-- Medium -->
+                <div class="diff-card medium" data-diff="MEDIUM">
+                    <span class="diff-badge">Intermediate</span>
+                    <div class="diff-icon" style="color:var(--accent-gold)"><i class="fas fa-fire"></i></div>
+                    <h3 class="diff-name">Medium</h3>
+                    <p class="diff-grid-spec">4 × 4 Grid • 8 Pairs</p>
+                    <div class="diff-meta-list">
+                        <div class="diff-meta-item"><span>Target Time:</span><span class="diff-meta-val">60s</span></div>
+                        <div class="diff-meta-item"><span>Multiplier:</span><span class="diff-meta-val">1.5x</span></div>
+                    </div>
+                </div>
+
+                <!-- Hard -->
+                <div class="diff-card hard" data-diff="HARD">
+                    <span class="diff-badge">Advanced</span>
+                    <div class="diff-icon" style="color:var(--accent-orange)"><i class="fas fa-meteor"></i></div>
+                    <h3 class="diff-name">Hard</h3>
+                    <p class="diff-grid-spec">5 × 4 Grid • 10 Pairs</p>
+                    <div class="diff-meta-list">
+                        <div class="diff-meta-item"><span>Target Time:</span><span class="diff-meta-val">90s</span></div>
+                        <div class="diff-meta-item"><span>Multiplier:</span><span class="diff-meta-val">2.0x</span></div>
+                    </div>
+                </div>
+
+                <!-- Expert -->
+                <div class="diff-card expert" data-diff="EXPERT">
+                    <span class="diff-badge">Grandmaster</span>
+                    <div class="diff-icon" style="color:var(--accent-purple)"><i class="fas fa-crown"></i></div>
+                    <h3 class="diff-name">Expert</h3>
+                    <p class="diff-grid-spec">6 × 4 Grid • 12 Pairs</p>
+                    <div class="diff-meta-list">
+                        <div class="diff-meta-item"><span>Target Time:</span><span class="diff-meta-val">120s</span></div>
+                        <div class="diff-meta-item"><span>Multiplier:</span><span class="diff-meta-val">2.5x</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progressive Level Map (Initially Hidden) -->
+            <div id="difficulty-progressive-section" class="levels-container" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="font-size:1.2rem; font-weight:700;"><i class="fas fa-map-marked-alt" style="color:var(--accent-purple); margin-right:8px;"></i> Progressive Levels</h3>
+                    <span style="font-size:0.9rem; color:var(--text-secondary);">Complete each level to unlock the next</span>
+                </div>
+                <div class="levels-grid" id="progressive-levels-grid"></div>
+            </div>
+
+            <div style="text-align:center; margin-top:10px;">
+                <button class="btn btn-secondary" id="btn-back-from-diff">
+                    <i class="fas fa-arrow-left"></i> Back to Main Menu
+                </button>
+            </div>
+        </main>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 3: GAME SCREEN                                              -->
+        <!-- ================================================================== -->
+        <main id="screen-game" class="screen">
+            <!-- Game HUD -->
+            <section class="game-hud">
+                <div class="hud-top-row">
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <span class="hud-pill highlight" id="hud-level">Level 1</span>
+                        <span class="hud-pill" id="hud-difficulty">MEDIUM</span>
+                        <span class="hud-pill streak" id="hud-streak" style="display:none;">
+                            <i class="fas fa-fire"></i> x1.5 Streak
+                        </span>
+                    </div>
+
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-icon" id="btn-game-pause" title="Pause Game (Esc)">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="btn-icon" id="btn-restart-game" title="Restart Game">
+                            <i class="fas fa-redo-alt"></i>
+                        </button>
+                        <button class="btn-icon" id="btn-game-exit" title="Quit to Menu">
+                            <i class="fas fa-door-open"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Key Metrics Grid -->
+                <div class="hud-stats-grid">
+                    <div class="hud-stat">
+                        <div class="hud-stat-title">Score</div>
+                        <div class="hud-stat-val" id="hud-score" style="color:var(--accent-orange);">0</div>
+                    </div>
+                    <div class="hud-stat">
+                        <div class="hud-stat-title">Time</div>
+                        <div class="hud-stat-val" id="hud-timer">00:00</div>
+                    </div>
+                    <div class="hud-stat">
+                        <div class="hud-stat-title">Moves</div>
+                        <div class="hud-stat-val" id="hud-moves">0</div>
+                    </div>
+                    <div class="hud-stat">
+                        <div class="hud-stat-title">Matches</div>
+                        <div class="hud-stat-val" id="hud-matches">0 / 8</div>
+                    </div>
+                    <div class="hud-stat">
+                        <div class="hud-stat-title">Accuracy</div>
+                        <div class="hud-stat-val" id="hud-accuracy">100%</div>
+                    </div>
+                </div>
+
+                <!-- Powerups Bar -->
+                <div class="hud-actions">
+                    <div class="powerups-group">
+                        <button class="btn-powerup" id="btn-game-hint" title="Peeks 1 pair (-25 pts)">
+                            <i class="fas fa-lightbulb" style="color:var(--accent-gold);"></i> Hint (-25)
+                        </button>
+                        <button class="btn-powerup" id="btn-game-shuffle" title="Re-shuffles remaining hidden cards (1 per game)">
+                            <i class="fas fa-random" style="color:var(--accent-cyan);"></i> Shuffle
+                        </button>
+                    </div>
+                    <div style="font-size:0.82rem; color:var(--text-muted);">
+                        Tip: Click two cards to match pairs
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cards Board -->
+            <div class="cards-board-container">
+                <div class="cards-grid" id="cards-grid-board"></div>
+            </div>
+        </main>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 4: PAUSE MODAL                                              -->
+        <!-- ================================================================== -->
+        <div class="modal-backdrop" id="modal-pause">
+            <div class="modal-box">
+                <div class="modal-header-icon pause">
+                    <i class="fas fa-pause"></i>
+                </div>
+                <h2 class="modal-title">Game Paused</h2>
+                <p class="modal-subtitle">Take a breather! Your timer is safely paused.</p>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary btn-lg" id="btn-resume-game">
+                        <i class="fas fa-play"></i> Resume Game
+                    </button>
+                    <button class="btn btn-secondary" id="btn-modal-restart">
+                        <i class="fas fa-redo-alt"></i> Restart Level
+                    </button>
+                    <button class="btn btn-secondary" id="btn-modal-quit">
+                        <i class="fas fa-home"></i> Quit to Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 5: GAME RESULT / VICTORY MODAL                              -->
+        <!-- ================================================================== -->
+        <div class="modal-backdrop" id="modal-victory">
+            <div class="modal-box">
+                <div class="modal-header-icon victory">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h2 class="modal-title">Level Cleared!</h2>
+                <p class="modal-subtitle">Outstanding memory skills!</p>
+
+                <!-- 3-Star Rating -->
+                <div class="stars-rating-wrap" id="result-stars-wrap">
+                    <span class="star active"><i class="fas fa-star"></i></span>
+                    <span class="star active"><i class="fas fa-star"></i></span>
+                    <span class="star active"><i class="fas fa-star"></i></span>
+                </div>
+
+                <!-- Score Breakdown -->
+                <div class="score-breakdown-card">
+                    <div class="breakdown-row"><span>Base Pairs Matched:</span><span class="breakdown-val" id="breakdown-base">+600</span></div>
+                    <div class="breakdown-row"><span>Speed Bonus:</span><span class="breakdown-val" id="breakdown-time">+240</span></div>
+                    <div class="breakdown-row"><span>Move Efficiency:</span><span class="breakdown-val" id="breakdown-moves">+150</span></div>
+                    <div class="breakdown-row"><span>Streak Multiplier:</span><span class="breakdown-val" id="breakdown-streak">+80</span></div>
+                    <div class="breakdown-row"><span>Hint Penalties:</span><span class="breakdown-val" id="breakdown-hint">-0</span></div>
+                    <div class="breakdown-row total"><span>Total Score:</span><span class="breakdown-val" id="breakdown-total">1,070</span></div>
+                </div>
+
+                <!-- Stats summary badges -->
+                <div style="display:flex; justify-content:space-around; margin-bottom:20px; font-size:0.9rem; color:var(--text-secondary);">
+                    <div>Time: <strong id="result-time-val" style="color:#fff;">00:32</strong></div>
+                    <div>Moves: <strong id="result-moves-val" style="color:#fff;">8</strong></div>
+                    <div>Accuracy: <strong id="result-accuracy-val" style="color:#fff;">100%</strong></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary btn-lg" id="btn-next-level" style="display:none;">
+                        <i class="fas fa-arrow-right"></i> Next Level
+                    </button>
+                    <button class="btn btn-purple" id="btn-play-again">
+                        <i class="fas fa-redo-alt"></i> Play Again
+                    </button>
+                    <button class="btn btn-secondary" id="btn-victory-leaderboard">
+                        <i class="fas fa-trophy"></i> View on Leaderboard
+                    </button>
+                    <button class="btn btn-secondary" id="btn-victory-home">
+                        <i class="fas fa-home"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 6: LEADERBOARD SCREEN                                       -->
+        <!-- ================================================================== -->
+        <main id="screen-leaderboard" class="screen">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-trophy" style="color:var(--accent-gold); margin-right:8px;"></i> Hall of Fame</h2>
+                <p class="section-subtitle">Top memory masters ranked by highest score and speed</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active leaderboard-filter-tab" data-filter="ALL">All Categories</button>
+                <button class="filter-tab leaderboard-filter-tab" data-filter="EASY">Easy (4×3)</button>
+                <button class="filter-tab leaderboard-filter-tab" data-filter="MEDIUM">Medium (4×4)</button>
+                <button class="filter-tab leaderboard-filter-tab" data-filter="HARD">Hard (5×4)</button>
+                <button class="filter-tab leaderboard-filter-tab" data-filter="EXPERT">Expert (6×4)</button>
+            </div>
+
+            <!-- Table Card -->
+            <div class="table-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <span style="font-size:0.9rem; color:var(--text-secondary);"><i class="fas fa-bolt" style="color:var(--accent-orange);"></i> Top 10 High Scores</span>
+                    <button class="btn btn-secondary btn-sm" id="btn-refresh-leaderboard">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Master Name</th>
+                            <th>Score</th>
+                            <th>Difficulty</th>
+                            <th>Time</th>
+                            <th>Moves</th>
+                            <th>Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody">
+                        <tr><td colspan="7" style="text-align:center; padding:20px;">Loading leaderboard data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="text-align:center;">
+                <button class="btn btn-secondary" id="btn-back-from-leaderboard">
+                    <i class="fas fa-arrow-left"></i> Back to Main Menu
+                </button>
+            </div>
+        </main>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 7: STATISTICS DASHBOARD SCREEN                              -->
+        <!-- ================================================================== -->
+        <main id="screen-stats" class="screen">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-chart-line" style="color:var(--accent-purple); margin-right:8px;"></i> Player Analytics</h2>
+                <p class="section-subtitle">Deep dive into your memory performance and trends</p>
+            </div>
+
+            <!-- Summary Stat Cards -->
+            <div class="quick-stats-bar">
+                <div class="stat-box">
+                    <div class="stat-icon orange"><i class="fas fa-play-circle"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Total Played</span>
+                        <span class="stat-value" id="stat-total-played">0</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon purple"><i class="fas fa-trophy"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Total Cleared</span>
+                        <span class="stat-value" id="stat-total-won">0</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon gold"><i class="fas fa-percentage"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Win Rate</span>
+                        <span class="stat-value" id="stat-win-rate">100%</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon cyan"><i class="fas fa-star"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Highest Score</span>
+                        <span class="stat-value" id="stat-high-score">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-stats-bar" style="margin-top:-20px;">
+                <div class="stat-box">
+                    <div class="stat-icon cyan"><i class="fas fa-clock"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Avg Clear Time</span>
+                        <span class="stat-value" id="stat-avg-time">--:--</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon gold"><i class="fas fa-shoe-prints"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Avg Moves</span>
+                        <span class="stat-value" id="stat-avg-moves">0</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon orange"><i class="fas fa-crown"></i></div>
+                    <div class="stat-content">
+                        <span class="stat-label">Best Difficulty</span>
+                        <span class="stat-value" id="stat-best-diff">EASY</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart.js Graph -->
+            <div class="stats-chart-wrap">
+                <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:14px;">
+                    <i class="fas fa-wave-square" style="color:var(--accent-orange); margin-right:6px;"></i> Performance Trajectory
+                </h3>
+                <div style="height:250px; position:relative;">
+                    <canvas id="statsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Sessions History Table -->
+            <div class="table-card">
+                <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:14px;">
+                    <i class="fas fa-history" style="color:var(--accent-purple); margin-right:6px;"></i> Recent Match History
+                </h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Difficulty / Lvl</th>
+                            <th>Score</th>
+                            <th>Time</th>
+                            <th>Moves</th>
+                            <th>Accuracy</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stats-history-tbody">
+                        <tr><td colspan="6" style="text-align:center; padding:20px;">No match history yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="text-align:center;">
+                <button class="btn btn-secondary" id="btn-back-from-stats">
+                    <i class="fas fa-arrow-left"></i> Back to Main Menu
+                </button>
+            </div>
+        </main>
+
+        <!-- ================================================================== -->
+        <!-- SCREEN 8: HOW TO PLAY SCREEN                                       -->
+        <!-- ================================================================== -->
+        <main id="screen-howto" class="screen">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-book-open" style="color:var(--accent-orange); margin-right:8px;"></i> How to Play</h2>
+                <p class="section-subtitle">Rules, Scoring Mechanisms, and Mastery Strategies</p>
+            </div>
+
+            <div class="how-to-grid">
+                <div class="guide-card">
+                    <div class="guide-step-num">1</div>
+                    <h3 class="guide-title">Flip & Recall</h3>
+                    <p class="guide-desc">Tap or click any face-down card to reveal its symbol. Then flip a second card. If both match, they stay face-up and you earn points!</p>
+                </div>
+
+                <div class="guide-card">
+                    <div class="guide-step-num">2</div>
+                    <h3 class="guide-title">Keep The Streak Burning</h3>
+                    <p class="guide-desc">Consecutive matches build a Streak Multiplier (x1.25, x1.5, x2.0+). Each matching pair in a streak yields exponentially higher points!</p>
+                </div>
+
+                <div class="guide-card">
+                    <div class="guide-step-num">3</div>
+                    <h3 class="guide-title">Speed & Efficiency</h3>
+                    <p class="guide-desc">Completing the board faster than the target time awards massive Speed Bonuses. Minimizing unnecessary moves boosts your move efficiency score.</p>
+                </div>
+
+                <div class="guide-card">
+                    <div class="guide-step-num">4</div>
+                    <h3 class="guide-title">Strategic Power-ups</h3>
+                    <p class="guide-desc">Use <strong>Hint</strong> to briefly illuminate a hidden matching pair when stuck (-25 pts). Use <strong>Shuffle</strong> once per match to reshuffle the remaining cards.</p>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:14px;"><i class="fas fa-calculator" style="color:var(--accent-gold); margin-right:6px;"></i> Scoring Breakdown Formula</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px; font-size:0.92rem;">
+                    $$\text{Final Score} = \left(\text{Base Match Points} + \text{Speed Bonus} + \text{Efficiency Bonus} + \text{Streak Bonus} - \text{Hint Penalty}\right) \times \text{Difficulty Multiplier}$$
+                </p>
+                <div style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6;">
+                    • <strong>Easy:</strong> 1.0x Multiplier (Target: 45s)<br>
+                    • <strong>Medium:</strong> 1.5x Multiplier (Target: 60s)<br>
+                    • <strong>Hard:</strong> 2.0x Multiplier (Target: 90s)<br>
+                    • <strong>Expert:</strong> 2.5x Multiplier (Target: 120s)
+                </div>
+            </div>
+
+            <div style="text-align:center;">
+                <button class="btn btn-secondary" id="btn-back-from-howto">
+                    <i class="fas fa-arrow-left"></i> Back to Main Menu
+                </button>
+            </div>
+        </main>
+
+        <!-- Player Name Edit Modal -->
+        <div class="modal-backdrop" id="modal-player-edit">
+            <div class="modal-box">
+                <h2 class="modal-title" style="font-size:1.5rem; margin-bottom:14px;">Your Player Identity</h2>
+                <p class="modal-subtitle">Enter your preferred display name for the leaderboards:</p>
+                <input type="text" id="input-player-name" maxlength="30" style="width:100%; padding:14px 18px; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-secondary); color:#fff; font-size:1.1rem; font-family:var(--font-main); margin-bottom:20px; outline:none;" placeholder="Enter display name...">
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="btn-save-player">Save Name</button>
+                    <button class="btn btn-secondary" id="btn-close-player">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts: Storage, Audio, API, Game Engine, UI, Master App -->
+    <script src="js/storage.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
